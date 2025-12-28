@@ -1,9 +1,10 @@
 FROM python:3.13-slim
 
-# PyAV için gerekli tüm paketleri kur
+# Build araçları + PyAV dependencies
 RUN apt-get update && apt-get install -y \
-    ffmpeg \
+    build-essential \
     pkg-config \
+    ffmpeg \
     libavcodec-dev \
     libavformat-dev \
     libavdevice-dev \
