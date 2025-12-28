@@ -1,4 +1,6 @@
 fastapi==0.115.5
 uvicorn[standard]==0.32.1
+--index-url https://download.pytorch.org/whl/cpu
+torch
 openai-whisper
 yt-dlp==2024.12.23
