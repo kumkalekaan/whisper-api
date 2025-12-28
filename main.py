@@ -6,8 +6,8 @@ import os
 
 app = FastAPI()
 
-# Whisper model yükle
-model = whisper.load_model("base")
+# Lazy loading - model ilk istekte yüklenecek!
+model = None
 
 @app.get("/")
 def home():
@@ -15,6 +15,12 @@ def home():
 
 @app.get("/transcribe")
 async def transcribe(url: str = Query(..., description="Video URL")):
+    global model
+    
+    # Model henüz yüklenmemişse yükle
+    if model is None:
+        model = whisper.load_model("tiny")  # tiny model = 75 MB RAM!
+    
     audio_path = "/tmp/audio_" + str(os.getpid()) + ".mp3"
     
     try:
