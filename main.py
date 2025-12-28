@@ -1,26 +1,20 @@
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, Query
+from fastapi.responses import JSONResponse
 import whisper
 import yt_dlp
 import os
 
-app = Flask(__name__)
+app = FastAPI()
 
 # Whisper model yükle
 model = whisper.load_model("base")
 
-@app.route('/')
+@app.get("/")
 def home():
     return {"status": "Whisper API çalışıyor!", "endpoint": "/transcribe?url=VIDEO_URL"}
 
-@app.route('/transcribe', methods=['POST', 'GET'])
-def transcribe():
-    url = request.args.get('url') or request.form.get('url')
-    if request.is_json:
-        url = request.json.get('url')
-    
-    if not url:
-        return jsonify({"error": "URL gerekli!"}), 400
-    
+@app.get("/transcribe")
+async def transcribe(url: str = Query(..., description="Video URL")):
     audio_path = "/tmp/audio_" + str(os.getpid()) + ".mp3"
     
     try:
@@ -43,9 +37,9 @@ def transcribe():
         if os.path.exists(audio_path):
             os.remove(audio_path)
         
-        return jsonify({"success": True, "transcript": transcript})
+        return JSONResponse({"success": True, "transcript": transcript})
         
     except Exception as e:
         if os.path.exists(audio_path):
             os.remove(audio_path)
-        return jsonify({"error": str(e)}), 500
+        return JSONResponse({"error": str(e)}, status_code=500)
