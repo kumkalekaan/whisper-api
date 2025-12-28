@@ -1,8 +1,16 @@
 FROM python:3.13-slim
 
-# ffmpeg kur (PyAV için gerekli)
+# PyAV için gerekli tüm paketleri kur
 RUN apt-get update && apt-get install -y \
     ffmpeg \
+    pkg-config \
+    libavcodec-dev \
+    libavformat-dev \
+    libavdevice-dev \
+    libavfilter-dev \
+    libavutil-dev \
+    libswscale-dev \
+    libswresample-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
